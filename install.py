@@ -18,6 +18,8 @@ import shutil
 import sys
 from pathlib import Path
 
+# Deliberate code-only change: exercises the CI rule that a branch touching the
+# project must also update the record. Expected to FAIL the handoff workflow.
 KIT = Path(__file__).resolve().parent
 
 POINTERS = {
