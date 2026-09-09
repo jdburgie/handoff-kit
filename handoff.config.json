@@ -1,0 +1,24 @@
+{
+  "handoff": "docs/state-of-play.md",
+  "journal": "JOURNAL.md",
+  "template": "docs/session-template.md",
+  "contract": "AGENTS.md",
+  "entry_points": ["CLAUDE.md"],
+  "required_files": [],
+  "max_words": 800,
+  "max_entry_point_words": 150,
+  "stale_after_days": 30,
+  "sections": [
+    "Current objective",
+    "Recent observations",
+    "Active work and constraints",
+    "Completed work",
+    "Next action",
+    "Open questions and parked work",
+    "Evidence and session record"
+  ],
+  "fields": ["Updated", "Evidence baseline", "Session status"],
+  "anchor_prefix": "session-",
+  "record_paths": ["docs/state-of-play.md", "JOURNAL.md"],
+  "ignore_paths": [".github/", "README.md", "LICENSE"]
+}
