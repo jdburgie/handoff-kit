@@ -11,6 +11,51 @@ never an edit that erases it.
 
 <!-- SESSION ENTRIES -->
 
+<a id="session-2026-09-08-push-and-ci"></a>
+## 2026-09-08 Published, and the workflow ran
+
+### Objective and constraints
+Push the kit to the public repository the user created, then check the result
+rather than assume it. Continues [the first build](#session-2026-09-08-build-the-kit).
+
+### Changes and decisions
+No code changed. Remote added and `main` pushed at `8dbffd1`. Before pushing, the
+tree was scanned for content from the private project it was generalized from —
+project name, product names, domain, personal identifiers — because the repository
+is public and a push is not reversible in any way that matters. Nothing was found.
+
+### Validation and evidence
+- Push: `main` tracking `origin/main`, `8dbffd1`, confirmed by `git status -sb`.
+- CI: run [34307145554](https://github.com/jdburgie/handoff-kit/actions/runs/34307145554),
+  event `push`, conclusion **success**, ~5 seconds on ubuntu-latest. Steps:
+  checkout ✅, setup-python ✅, **validate the handoff ✅**, whitespace ✅,
+  and *require a session record* **skipped**.
+- ⭐ This is the first evidence the validator runs anywhere but Windows/Python
+  3.12. Portability now rests on one Linux run rather than an assumption.
+- ⚠️ **The `--base` rule was skipped, not exercised.** It is `pull_request`-only,
+  and no pull request exists. It passed locally in both directions - failing a
+  code-only commit, passing once the record was updated - and that remains the
+  only evidence for it.
+- Not tested: macOS, older Pythons, and any second project adopting the kit.
+
+### State at the end
+Public repository, `main` at `8dbffd1`, working tree clean apart from this record.
+Nothing running, nothing parked.
+
+### Next action and completion condition
+Install into one real project other than this one and fix what that exposes; a
+throwaway pull request would close the `--base` gap at the same time.
+
+Completion condition: a second project passes the validator after an install that
+needed no edits to the script.
+
+### Do not repeat
+Do not record the workflow as unrun - it has run, green, and the handoff says so.
+Do not treat the skipped `--base` step as evidence that it works on GitHub; the
+opposite is true, and the local test is what stands behind it.
+
+---
+
 <a id="session-2026-09-08-build-the-kit"></a>
 ## 2026-09-08 Build the kit
 
