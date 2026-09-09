@@ -44,6 +44,17 @@ what it skipped so you can merge by hand.
 Then fill in the placeholders in `docs/state-of-play.md`. Until you do, the
 handoff describes the template rather than your project.
 
+**If the project already has a `JOURNAL.md`**, the installer leaves it alone and
+tells you the two things to add by hand: a `<!-- SESSION ENTRIES -->` marker, and
+one anchored entry (`<a id="session-YYYY-MM-DD-topic"></a>`) linked from the
+handoff. Older entries keep their existing shape — anchor new ones from here on,
+and do not rewrite history to satisfy a validator.
+
+⭐ **And look for the handoff you already have.** Most long-running projects have
+one: a "current state" block at the top of a journal, a `HANDOFF_*.md`, a pinned
+issue. Move its content into `state-of-play.md` and mark the original superseded.
+Installing beside it leaves two pickup documents, which is worse than none.
+
 ## The three ideas
 
 **1 — One handoff, updated in place.** Not a pile of summaries. `state-of-play.md`

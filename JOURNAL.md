@@ -11,6 +11,53 @@ never an edit that erases it.
 
 <!-- SESSION ENTRIES -->
 
+<a id="session-2026-09-08-second-adoption"></a>
+## 2026-09-08 Second adoption, and what it exposed
+
+### Objective and constraints
+Install the kit into `esp32-sprinkler-controller` — the first project other than
+this one — and fix whatever that revealed. That was the completion condition in
+the previous entry.
+
+### Changes and decisions
+The install itself needed **no edit to the validator or the config**, which is the
+condition met. Two frictions appeared, and both are now handled in the kit rather
+than in that project's head:
+
+- **An existing `JOURNAL.md` is skipped, and the user is left holding a validator
+  that wants anchors.** `install.py` now prints exactly what to add — the
+  `<!-- SESSION ENTRIES -->` marker and one anchored entry — and says older entries
+  keep their shape. **Do not rewrite history to satisfy a check.**
+- ⭐ **A long-running project usually already has a handoff, in the wrong place.**
+  That one had a "Current pinned state" block at the top of its journal, plus a
+  branch-specific `HANDOFF_*.md`. Installing beside it would have produced two
+  pickup documents, which is worse than none. The README now says to find it,
+  move its content, and mark the original superseded — which is what was done.
+
+### Validation and evidence
+- `python tools/check-handoff.py` in `esp32-sprinkler-controller`: **passes**,
+  2026-09-08, commit `3d47c84`.
+- The new installer output was re-run against the scratch project and prints the
+  existing-journal guidance as intended.
+- ⚠️ The kit's own CI has not run since these edits, and the `--base` step still
+  has never executed on GitHub.
+
+### State at the end
+`main` with the installer and README changes plus this record. The second project
+is committed and pushed on its own remote; nothing here depends on it.
+
+### Next action and completion condition
+Open a throwaway pull request here to exercise the `--base` step.
+
+Completion condition: one PR run where it fails a code-only change, and one where
+it passes after the record is updated.
+
+### Do not repeat
+Do not claim the sections are proven for software-only projects — the one adoption
+so far is a firmware project with hardware, which is the same shape as the source.
+
+---
+
 <a id="session-2026-09-08-push-and-ci"></a>
 ## 2026-09-08 Published, and the workflow ran
 

@@ -109,6 +109,15 @@ def main():
     if skipped:
         print(f"{len(skipped)} file(s) already existed and were left alone. "
               "Merge by hand, or re-run with --force.")
+    if any(d.name == "JOURNAL.md" for d in skipped):
+        print()
+        print("  This project already has a JOURNAL.md, so it was not touched.")
+        print("  The validator needs two things in it, and neither destroys history:")
+        print("    1. a '<!-- SESSION ENTRIES -->' marker above the newest entry")
+        print("    2. one anchored entry below it:")
+        print('       <a id="session-YYYY-MM-DD-topic"></a>')
+        print("  Then link that anchor from docs/state-of-play.md. Older entries stay")
+        print("  exactly as they are; anchor new ones from here on.")
     if args.dry_run:
         print("Dry run: nothing was written.")
         return 0
