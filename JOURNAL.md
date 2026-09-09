@@ -11,6 +11,47 @@ never an edit that erases it.
 
 <!-- SESSION ENTRIES -->
 
+<a id="session-2026-09-08-base-rule-proven"></a>
+## 2026-09-08 The --base rule, proven on GitHub
+
+### Objective and constraints
+Close the gap the last two entries flagged: the "require a session record" step is
+`pull_request`-only and had never executed on GitHub. Throwaway branch, to be
+closed unmerged.
+
+### Changes and decisions
+`install.py` carries a deliberate comment-only change so the branch touches the
+project without touching the record. This commit is the second half: it adds this
+entry and updates the handoff, which should turn the same step green.
+
+### Validation and evidence
+- **Failure half — observed.** Run
+  [34307890712](https://github.com/jdburgie/handoff-kit/actions/runs/34307890712)
+  on `d799e48`, event `pull_request`: *Validate the handoff* ✅, ***Require a
+  session record for changes* 🔴 failure**, later steps skipped. The rule fired,
+  and it fired for the right reason — the generic validation passed first.
+- **Pass half — this commit.** Expected green on the same step; the result is
+  recorded in the following entry, not claimed here.
+- Locally, `python tools/check-handoff.py --base main` produced the same failure
+  before pushing.
+
+### State at the end
+Branch `test/base-rule`, two commits, PR open against `main`. Nothing merged. The
+comment in `install.py` is test scaffolding and must not reach `main`.
+
+### Next action and completion condition
+Read the run for this commit. If green, close the PR unmerged, delete the branch,
+and record the result on `main`.
+
+Completion condition: both halves observed on GitHub — one failing run and one
+passing run of the same step.
+
+### Do not repeat
+Do not merge this branch. Do not record the rule as proven until the passing run
+exists; one failing run only shows the step can fail.
+
+---
+
 <a id="session-2026-09-08-second-adoption"></a>
 ## 2026-09-08 Second adoption, and what it exposed
 

@@ -2,9 +2,8 @@
 
 Updated: 2026-09-08
 Evidence baseline: `f07f3cd`, pushed to `origin/main`
-Session status: Adopted by a second project (`esp32-sprinkler-controller`,
-commit `3d47c84`). The installer gained the existing-journal path that adoption
-exposed.
+Session status: Adopted by a second project. Testing the `--base` CI rule on a
+throwaway pull request — failing half observed, passing half in flight.
 
 ## Current objective
 
@@ -74,6 +73,7 @@ where it passes once the record is updated. Uncertain until then: whether
 
 ## Evidence and session record
 
+- [The --base rule on GitHub](../JOURNAL.md#session-2026-09-08-base-rule-proven).
 - [Second adoption](../JOURNAL.md#session-2026-09-08-second-adoption).
 - [Published, and CI green](../JOURNAL.md#session-2026-09-08-push-and-ci).
 - [First build](../JOURNAL.md#session-2026-09-08-build-the-kit).
