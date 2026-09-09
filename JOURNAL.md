@@ -11,6 +11,58 @@ never an edit that erases it.
 
 <!-- SESSION ENTRIES -->
 
+<a id="session-2026-09-08-base-rule-proven"></a>
+## 2026-09-08 The --base rule, proven on GitHub in both directions
+
+### Objective and constraints
+Close the gap the previous two entries flagged: the "require a session record"
+step is `pull_request`-only and had never executed on GitHub, so the only evidence
+for it was a local test. Throwaway branch `test/base-rule`, PR #1, not merged.
+
+### Changes and decisions
+Nothing in the kit changed. The branch carried a deliberate comment-only edit to
+`install.py` so it touched the project without touching the record, then a second
+commit adding a journal entry and a handoff link. The branch exists to be thrown
+away; its own entry never reaches `main`, which is why this one is self-contained.
+
+### Validation and evidence
+**Both halves observed on GitHub, on the same PR, same workflow, same step:**
+
+| Commit | Run | *Require a session record* |
+|---|---|---|
+| `d799e48` — code only | [34307890712](https://github.com/jdburgie/handoff-kit/actions/runs/34307890712) | 🔴 **failure** |
+| `939873d` — code **and** record | [34308026068](https://github.com/jdburgie/handoff-kit/actions/runs/34308026068) | ✅ **success** |
+
+- In the failing run, *Validate the handoff* passed first and the later steps were
+  skipped: **the rule fired for the right reason**, not because the workflow was
+  broken. In the passing run all nine steps succeeded, in ~4 seconds.
+- `origin/${{ github.base_ref }}` resolves as the workflow assumed, with
+  `fetch-depth: 0`. Three-dot diff against the PR merge commit behaves correctly.
+- The same two outcomes were reproduced locally with
+  `python tools/check-handoff.py --base main` before each push.
+- ⚠️ Tested on **one** repository, with a one-file change, on a PR into `main`.
+  Nothing is known about forked-PR runs, where `origin/<base>` may not be fetched
+  the same way.
+
+### State at the end
+`main` unchanged apart from this record. PR #1 is open and **must not be merged** —
+the `install.py` comment on that branch is scaffolding. The branch and PR are the
+user's to close.
+
+### Next action and completion condition
+Install the kit into a software-only project. The sections were generalized from a
+hardware project and have now been used by another firmware project; "Recent
+observations" is the row most likely to read oddly where there is no device.
+
+Completion condition: a software-only project passes the validator, and its
+handoff reads naturally rather than being bent to fit the template.
+
+### Do not repeat
+Do not re-run this test — both directions are recorded above with run links. Do not
+merge `test/base-rule`.
+
+---
+
 <a id="session-2026-09-08-second-adoption"></a>
 ## 2026-09-08 Second adoption, and what it exposed
 

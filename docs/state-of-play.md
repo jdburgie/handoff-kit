@@ -2,9 +2,9 @@
 
 Updated: 2026-09-08
 Evidence baseline: `f07f3cd`, pushed to `origin/main`
-Session status: Adopted by a second project (`esp32-sprinkler-controller`,
-commit `3d47c84`). The installer gained the existing-journal path that adoption
-exposed.
+Session status: Adopted by a second project, and the `--base` CI rule is now
+proven on GitHub in both directions. PR #1 is open scaffolding and must not be
+merged.
 
 ## Current objective
 
@@ -20,7 +20,7 @@ without dependencies. The kit follows its own contract — this file and
 | `tools/check-handoff.py` | `VERIFIED` 2026-09-08 on Windows/Python 3.12 **and** in CI on ubuntu-latest | Exits 0 on this repo, and eight negative cases each produce their intended error. Portability now rests on one Linux run, not an assumption. |
 | `install.py` | `VERIFIED` 2026-09-08 into a scratch directory **and one real project** | Fills placeholders, skips existing files, and both installed trees pass the validator. Windows only. |
 | Second adoption: `esp32-sprinkler-controller` | `VERIFIED` 2026-09-08, commit `3d47c84` | Installed and passed the validator with **no edit to the script or the config**. The manual work was migrating an existing ad-hoc handoff and anchoring the existing journal. |
-| `.github/workflows/handoff.yml` | `VERIFIED` on `8dbffd1`, run [34307145554](https://github.com/jdburgie/handoff-kit/actions/runs/34307145554) | Green in ~5s on ubuntu-latest: checkout, setup-python, validate, whitespace. ⚠️ The `--base` step is `pull_request`-only and was **skipped** — never exercised on GitHub. |
+| `.github/workflows/handoff.yml` | `VERIFIED` on push ([34307145554](https://github.com/jdburgie/handoff-kit/actions/runs/34307145554)) **and on pull request, both directions** | The `--base` step failed a code-only commit ([34307890712](https://github.com/jdburgie/handoff-kit/actions/runs/34307890712)) and passed once the record was updated ([34308026068](https://github.com/jdburgie/handoff-kit/actions/runs/34308026068)). ⚠️ One repo, one-file change, same-repo PR — forked PRs untested. |
 
 ## Active work and constraints
 
@@ -50,20 +50,22 @@ and this file is the whole point.
 
 ## Next action
 
-Close the `--base` gap: open a throwaway pull request here and confirm the
-"require a session record" step actually fails a code-only change on GitHub.
+Install the kit into a software-only project — no firmware, no devices — and see
+whether "Recent observations" reads naturally there or has to be bent to fit.
 
-Completion condition: a PR run where that step reports failure, and a second run
-where it passes once the record is updated. Uncertain until then: whether
-`origin/${{ github.base_ref }}` resolves as the workflow assumes.
+Completion condition: a software-only project passes the validator with a handoff
+that reads like a real one. Uncertain until then: whether the section set needs a
+software-only variant in the config.
 
 ## Open questions and parked work
 
-- ⚠️ **The `--base` rule has never run on GitHub** (see next action). It passed
-  locally both ways; CI has only ever skipped it.
+- **Forked pull requests are untested.** `origin/<base_ref>` may not be fetched
+  the same way for a PR from a fork; the rule has only been proven same-repo.
 - The default sections survived one software+hardware project unchanged. **Still
   untested on a software-only project**, which is where "recent observations" may
   read oddly.
+- 🧹 PR #1 (`test/base-rule`) is open scaffolding. Close it unmerged and delete
+  the branch; the `install.py` comment on it must not reach `main`.
 - The CI workflow's whitespace step exits 0 by construction; now that it has run,
   decide whether it should be allowed to fail the build.
 - No test suite for the validator itself. A handful of fixture repositories —
@@ -74,6 +76,7 @@ where it passes once the record is updated. Uncertain until then: whether
 
 ## Evidence and session record
 
+- [The --base rule proven](../JOURNAL.md#session-2026-09-08-base-rule-proven).
 - [Second adoption](../JOURNAL.md#session-2026-09-08-second-adoption).
 - [Published, and CI green](../JOURNAL.md#session-2026-09-08-push-and-ci).
 - [First build](../JOURNAL.md#session-2026-09-08-build-the-kit).
