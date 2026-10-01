@@ -34,6 +34,8 @@ this file rather than copy it, so there is one contract and not five drifting on
 
 ## Evidence and decisions
 
+Keep the work tightly scoped, reuse established findings, and stop once the necessary checks pass.
+
 **Three different things establish three different facts, and none substitutes for
 another:**
 
