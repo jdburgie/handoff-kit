@@ -36,6 +36,15 @@ this file rather than copy it, so there is one contract and not five drifting on
 
 Keep the work tightly scoped, reuse established findings, and stop once the necessary checks pass.
 
+- **Update only what changed.** Keep follow-up notes brief. Revisit other documents
+  only when the new work makes them inaccurate.
+- **Match verification to the change.** Run the smallest set of meaningful checks.
+  Broaden testing when failures, dependencies, or unresolved risks justify it.
+- **Give every investigation a stopping point.** State what question it should
+  answer. Stop when the evidence supports the next decision.
+- **Keep closeout proportional.** Record the result, relevant validation, remaining
+  uncertainty, and next action. Don't repeat the investigation history.
+
 **Three different things establish three different facts, and none substitutes for
 another:**
 
