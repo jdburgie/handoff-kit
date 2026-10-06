@@ -45,6 +45,25 @@ Keep the work tightly scoped, reuse established findings, and stop once the nece
 - **Keep closeout proportional.** Record the result, relevant validation, remaining
   uncertainty, and next action. Don't repeat the investigation history.
 
+### Completion checks
+
+- **Define done before substantial work.** List the requested outcomes and the
+  smallest observable checks that establish them. Use the existing task or handoff;
+  a trivial edit needs no separate checklist file.
+- **Check the outcome, not just the command.** A successful exit must establish the
+  claimed behaviour. When relying on a negative result, confirm that the check can
+  detect a known failure. Review inherited commands and scripts before running them.
+- **Keep evidence applicable.** Record which revision and environment a check covers.
+  After relevant code, dependency, or environment changes, rerun affected checks.
+  Reuse still-applicable results; do not rerun everything merely for closeout.
+- **Reconcile the request before reporting completion.** Include later amendments.
+  Account for every required outcome with evidence or an explicit unresolved item
+  and next action. Never silently drop a requirement, weaken a failing check, or
+  report blocked or deferred work as complete.
+
+These principles are adapted from [unlazy](https://github.com/Leonxlnx/unlazy/blob/main/SKILL.md).
+Apply them within the scope and stopping rules above; extra tooling is optional.
+
 **Three different things establish three different facts, and none substitutes for
 another:**
 

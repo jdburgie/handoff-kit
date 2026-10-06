@@ -11,6 +11,33 @@ never an edit that erases it.
 
 <!-- SESSION ENTRIES -->
 
+<a id="session-2026-10-05-completion-guidance"></a>
+## 2026-10-05 Proportional completion guidance
+
+### Objective and constraints
+Add useful unlazy principles while retaining the existing scope and stopping rules.
+
+### Changes and decisions
+Added four completion-check rules to `AGENTS.md`, with source attribution.
+No skill, hooks, mandatory ledger, or repeated verification loop was installed.
+
+### Validation and evidence
+Documentation checks: `py tools/check-handoff.py` and `git diff --check`.
+These check structure and whitespace; agent adherence is not verified.
+
+### State at the end
+Only the contract and this brief session record/handoff update changed.
+No active experiment; earlier parked work remains untouched.
+
+### Next action and completion condition
+Use the guidance on the next substantive task; completion requires observable
+outcomes or clearly disclosed unresolved work. No further implementation required.
+
+### Do not repeat
+Reuse existing evidence and stop after necessary checks pass.
+
+---
+
 <a id="session-2026-09-08-base-rule-proven"></a>
 ## 2026-09-08 The --base rule, proven on GitHub in both directions
 

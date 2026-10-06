@@ -1,10 +1,9 @@
 # handoff-kit — pickup
 
-Updated: 2026-09-08
-Evidence baseline: `f07f3cd`, pushed to `origin/main`
-Session status: Adopted by a second project, and the `--base` CI rule is now
-proven on GitHub in both directions. PR #1 is open scaffolding and must not be
-merged.
+Updated: 2026-10-05
+Evidence baseline: `3762154`, fetched from `origin/main`
+Session status: Completion guidance added to the contract. Earlier operational
+observations and parked work below remain last recorded on 2026-09-08.
 
 ## Current objective
 
@@ -30,6 +29,9 @@ from a private project. Do not add a second pickup document; extending `AGENTS.m
 and this file is the whole point.
 
 ## Completed work
+
+- Added proportional completion checks inspired by unlazy: observable outcomes,
+  meaningful checks, applicable evidence, and final request reconciliation.
 
 - `AGENTS.md`: the contract — pickup, evidence vocabulary, rules for irreversible
   actions, session end, and a table of the failure each rule prevents.
@@ -75,6 +77,8 @@ software-only variant in the config.
   Action published to the marketplace.
 
 ## Evidence and session record
+
+- [Completion guidance](../JOURNAL.md#session-2026-10-05-completion-guidance).
 
 - [The --base rule proven](../JOURNAL.md#session-2026-09-08-base-rule-proven).
 - [Second adoption](../JOURNAL.md#session-2026-09-08-second-adoption).
