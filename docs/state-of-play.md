@@ -1,9 +1,9 @@
 # handoff-kit — pickup
 
-Updated: 2026-10-05
-Evidence baseline: `3762154`, fetched from `origin/main`
-Session status: Completion guidance added to the contract. Earlier operational
-observations and parked work below remain last recorded on 2026-09-08.
+Updated: 2026-10-21
+Evidence baseline: `173312b`, fetched from `origin/main`, plus uncommitted work on `feat/skill-package`
+Session status: Packaged as an agent skill on `feat/skill-package`; not yet
+committed, pushed, or run in CI. Rows dated 2026-09-08 are last recorded then.
 
 ## Current objective
 
@@ -16,8 +16,8 @@ without dependencies. The kit follows its own contract — this file and
 
 | Thing | Last state | Observation and limitation |
 |---|---|---|
-| `tools/check-handoff.py` | `VERIFIED` 2026-09-08 on Windows/Python 3.12 **and** in CI on ubuntu-latest | Exits 0 on this repo, and eight negative cases each produce their intended error. Portability now rests on one Linux run, not an assumption. |
-| `install.py` | `VERIFIED` 2026-09-08 into a scratch directory **and one real project** | Fills placeholders, skips existing files, and both installed trees pass the validator. Windows only. |
+| `skills/handoff-kit/` | `BUILT` 2026-10-21, Windows/Python 3.13 | `tests/test_kit.py` passes all 10 tests from a standalone copy, and both plugin manifests validate. Not yet run in CI, installed as a plugin, or loaded by another agent. |
+| `tools/check-handoff.py` (merged) | `BUILT` 2026-10-21 | Exits 0 here. Five local adopters pass unchanged. The three oaklink repos need a config for their sections and four journal-link fixes. |
 | Second adoption: `esp32-sprinkler-controller` | `VERIFIED` 2026-09-08, commit `3d47c84` | Installed and passed the validator with **no edit to the script or the config**. The manual work was migrating an existing ad-hoc handoff and anchoring the existing journal. |
 | `.github/workflows/handoff.yml` | `VERIFIED` on push ([34307145554](https://github.com/jdburgie/handoff-kit/actions/runs/34307145554)) **and on pull request, both directions** | The `--base` step failed a code-only commit ([34307890712](https://github.com/jdburgie/handoff-kit/actions/runs/34307890712)) and passed once the record was updated ([34308026068](https://github.com/jdburgie/handoff-kit/actions/runs/34308026068)). ⚠️ One repo, one-file change, same-repo PR — forked PRs untested. |
 
@@ -30,6 +30,9 @@ and this file is the whole point.
 
 ## Completed work
 
+- Packaged the kit as a self-contained agent skill with install, pickup, session
+  end and upgrade modes. Added a Claude Code plugin manifest and a kit test
+  suite, and merged the esp32-sprinkler-controller validator improvements.
 - Added proportional completion checks inspired by unlazy: observable outcomes,
   meaningful checks, applicable evidence, and final request reconciliation.
 
@@ -52,31 +55,30 @@ and this file is the whole point.
 
 ## Next action
 
-Install the kit into a software-only project — no firmware, no devices — and see
-whether "Recent observations" reads naturally there or has to be bent to fit.
+With the user's approval, commit `feat/skill-package`, push it, open a PR, and
+confirm that the `handoff` and `test` workflows pass. After merge, tag `v1.0.0`.
+Listing on a marketplace is the user's own step.
 
-Completion condition: a software-only project passes the validator with a handoff
-that reads like a real one. Uncertain until then: whether the section set needs a
-software-only variant in the config.
+Completion condition: both workflows are green on the PR, and the plugin
+installs from `jdburgie/handoff-kit`.
 
 ## Open questions and parked work
 
 - **Forked pull requests are untested.** `origin/<base_ref>` may not be fetched
   the same way for a PR from a fork; the rule has only been proven same-repo.
-- The default sections survived one software+hardware project unchanged. **Still
-  untested on a software-only project**, which is where "recent observations" may
-  read oddly.
+- Upgrade the eight adopter repos with `install.py --upgrade`, one at a time. The
+  oaklink repos first need a `handoff.config.json` for their sections.
+- The default sections are **still untested on a software-only project**, which
+  is where "recent observations" may read oddly.
 - 🧹 PR #1 (`test/base-rule`) is open scaffolding. Close it unmerged and delete
   the branch; the `install.py` comment on it must not reach `main`.
 - The CI workflow's whitespace step exits 0 by construction; now that it has run,
   decide whether it should be allowed to fail the build.
-- No test suite for the validator itself. A handful of fixture repositories —
-  one valid, several broken in specific ways — would be worth more than any
-  further feature.
-- Parked deliberately: no packaging, no installer beyond a script, no GitHub
-  Action published to the marketplace.
+- Parked deliberately: no GitHub Action published to the Actions marketplace.
 
 ## Evidence and session record
+
+- [Packaged as an agent skill](../JOURNAL.md#session-2026-10-21-skill-package).
 
 - [Completion guidance](../JOURNAL.md#session-2026-10-05-completion-guidance).
 

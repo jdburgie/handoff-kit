@@ -1,0 +1,31 @@
+name: handoff
+
+on:
+  pull_request:
+  push:
+    branches: [main, master, trunk]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Validate the handoff
+        run: python tools/check-handoff.py
+
+      # A branch that changes the project must also update the record.
+      # Structure only: CI cannot tell you whether the record is true.
+      - name: Require a session record for changes
+        if: github.event_name == 'pull_request'
+        run: |
+          python tools/check-handoff.py --base "origin/${{ github.base_ref }}"
+
+      - name: Whitespace check
+        run: git diff --check "origin/${{ github.event.pull_request.base.sha || github.event.before }}" HEAD || true

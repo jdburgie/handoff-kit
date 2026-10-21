@@ -11,6 +11,62 @@ never an edit that erases it.
 
 <!-- SESSION ENTRIES -->
 
+<a id="session-2026-10-21-skill-package"></a>
+## 2026-10-21 Packaged as an agent skill
+
+### Objective and constraints
+Package the kit as a self-contained, agent-neutral `SKILL.md` skill with four
+modes: install, pickup, session end, and upgrade. The trigger was a listing
+invitation from the Agensi skills marketplace. The user chose to keep a
+vendored validator in each project so CI keeps working. Upgrading the eight
+adopter repositories was out of scope. This lifts the earlier "no packaging"
+parking at the user's request.
+
+### Changes and decisions
+- `skills/handoff-kit/` is now the canonical payload: `SKILL.md`, `install.py`,
+  the templates (the CI workflow is now `templates/ci/handoff.yml`), and copies of
+  `AGENTS.md`, `handoff.config.json`, `LICENSE` and the validator. The root files
+  are the kit's own installed copy, and `tests/test_kit.py` fails if they drift.
+- `SKILL.md` routes to the target repository's `AGENTS.md` and does not restate it.
+- The validator merges the esp32-sprinkler-controller improvements: fenced code
+  ignored, `<link>` targets, links may not leave the repo, `#fragment` must
+  resolve, the `<!-- SESSION ENTRIES -->` marker is required, the handoff must
+  link the newest entry exactly, and two opt-in keys (`journal_sections`,
+  `require_all_records`).
+- `install.py --upgrade` replaces only the validator and an existing CI workflow,
+  and reports a differing `AGENTS.md` or session template without touching them.
+- Added `.claude-plugin/` manifests and a `test` workflow.
+
+### Validation and evidence
+On Windows/Python 3.13, on the uncommitted `feat/skill-package` tree:
+`py tests/test_kit.py` passed all 10 tests. They install from a copy of the skill
+outside the repo, and include six negative cases that each produce their intended
+error. `py tools/check-handoff.py` exits 0. `claude plugin validate` passes for
+both manifests. The built zip holds 19 entries with valid frontmatter.
+`git diff --check` is clean. Read-only run of the new validator against local
+adopters: five pass unchanged. The three oaklink repositories fail on hardcoded
+`Last observed bench state` sections and four journal links the old script never
+checked. **Not verified:** the CI runs, a plugin install in Claude Code, loading
+in any other agent, and Agensi's security scan.
+
+### State at the end
+All changes are on `feat/skill-package`, not yet committed or pushed. No tag.
+Adopter repositories are untouched.
+
+### Next action and completion condition
+With the user's approval, commit, push, open a PR, and confirm both workflows
+pass on it. After merge, tag `v1.0.0`.
+
+Completion condition: both workflows are green on the PR, and the plugin
+installs from `jdburgie/handoff-kit`.
+
+### Do not repeat
+Do not fetch the validator in CI with `curl | python`. It defeats pinning by
+copy, and a marketplace security scan is likely to flag it. Do not move the
+templates back to the repository root; the skill folder must stand alone.
+
+---
+
 <a id="session-2026-10-05-completion-guidance"></a>
 ## 2026-10-05 Proportional completion guidance
 

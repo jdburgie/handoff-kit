@@ -1,0 +1,16 @@
+{
+  "name": "handoff-kit",
+  "owner": {
+    "name": "Jon Burgermeister"
+  },
+  "metadata": {
+    "description": "The handoff-kit session contract as an installable skill."
+  },
+  "plugins": [
+    {
+      "name": "handoff-kit",
+      "source": "./",
+      "description": "Pickup and session-end contract for AI-assisted projects, with a dependency-free validator."
+    }
+  ]
+}

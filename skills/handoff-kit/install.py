@@ -8,6 +8,7 @@ overwrites an existing file unless you pass --force, and it says what it skipped
     python install.py ../my-project
     python install.py ../my-project --tools claude,cursor --ci
     python install.py ../my-project --dry-run
+    python install.py ../my-project --upgrade    # refresh the validator and CI only
 
 Standard library only. Python 3.8+.
 """
@@ -37,6 +38,14 @@ CORE = [
     ("templates/JOURNAL.md", "JOURNAL.md"),
 ]
 
+CI = ("templates/ci/handoff.yml", ".github/workflows/handoff.yml")
+
+# Generic files an upgrade may replace. Everything else can carry local
+# adaptations, so an upgrade only reports whether it differs from the kit.
+UPGRADE = [("tools/check-handoff.py", "tools/check-handoff.py"), CI]
+COMPARE = [("AGENTS.md", "AGENTS.md"),
+           ("templates/session-template.md", "docs/session-template.md")]
+
 
 def fill(text, project, baseline):
     return (text.replace("{{PROJECT}}", project)
@@ -59,6 +68,36 @@ def install_one(src, dest, project, baseline, force, dry_run, results):
     results.append(("wrote", dest, ""))
 
 
+def upgrade(target, dry_run):
+    for src_rel, dest_rel in UPGRADE:
+        src, dest = KIT / src_rel, target / dest_rel
+        if dest_rel == CI[1] and not dest.exists():
+            continue
+        if dest.exists() and dest.read_bytes() == src.read_bytes():
+            print(f"  current      {dest_rel}")
+            continue
+        print(f"  {'would write' if dry_run else 'wrote':<11}  {dest_rel}")
+        if not dry_run:
+            dest.parent.mkdir(parents=True, exist_ok=True)
+            dest.write_bytes(src.read_bytes())
+    for src_rel, dest_rel in COMPARE:
+        dest = target / dest_rel
+        if not dest.exists():
+            print(f"  missing      {dest_rel}")
+        elif dest.read_bytes() != (KIT / src_rel).read_bytes():
+            print(f"  differs      {dest_rel}   (compare with {KIT / src_rel}; "
+                  "keep deliberate local adaptations)")
+    print()
+    if (target / "handoff.config.json").exists():
+        print("handoff.config.json was left alone; keys it omits take the kit defaults.")
+    else:
+        print("WARNING: no handoff.config.json. If the old validator hardcoded section")
+        print("names or required files, copy them into a config before relying on it.")
+    if dry_run:
+        print("Dry run: nothing was written.")
+    return 0
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     parser.add_argument("target", help="path to the project repository")
@@ -70,6 +109,9 @@ def main():
                              + ",".join(POINTERS) + ",all,none")
     parser.add_argument("--ci", action="store_true",
                         help="also install the GitHub Actions workflow")
+    parser.add_argument("--upgrade", action="store_true",
+                        help="replace only the validator (and the CI workflow if "
+                             "present), and report other kit files that differ")
     parser.add_argument("--force", action="store_true", help="overwrite existing files")
     parser.add_argument("--dry-run", action="store_true", help="show what would happen")
     args = parser.parse_args()
@@ -90,9 +132,12 @@ def main():
     if unknown:
         raise SystemExit(f"Unknown tool(s): {unknown}. Known: {list(POINTERS)}")
 
+    if args.upgrade:
+        return upgrade(target, args.dry_run)
+
     plan = list(CORE) + [POINTERS[t] for t in chosen]
     if args.ci:
-        plan.append((".github/workflows/handoff.yml", ".github/workflows/handoff.yml"))
+        plan.append(CI)
 
     results = []
     for src_rel, dest_rel in plan:
