@@ -45,6 +45,8 @@ DEFAULTS = {
     "anchor_prefix": "session-",
     "record_paths": [],
     "ignore_paths": [],
+    "require_all_records": False,
+    "journal_sections": [],
 }
 
 
@@ -80,18 +82,44 @@ def read(root, name):
 
 
 def check_links(root, name, text, errors):
-    """Every relative markdown link must resolve to a file in the repo."""
+    """Check local paths and explicit/simple Markdown heading fragments."""
     base = (root / name).parent
+    text = re.sub(r"```.*?```", "", text, flags=re.S)
     for target in re.findall(r"\]\(([^)]+)\)", text):
-        target = target.strip().split(" ")[0]
-        if not target or target.startswith(("http://", "https://", "mailto:", "#")):
+        target = target.strip()
+        if target.startswith("<") and ">" in target:
+            target = target[1:target.index(">")]
+        else:
+            target = target.split(" ")[0]
+        if not target:
             continue
         parts = urlsplit(target)
-        if parts.scheme or parts.netloc or not parts.path:
+        if parts.scheme or parts.netloc:
             continue
-        resolved = (base / unquote(parts.path)).resolve()
+        resolved = (base / unquote(parts.path) if parts.path else root / name).resolve()
+        try:
+            resolved.relative_to(root.resolve())
+        except ValueError:
+            errors.append(f"{name}: link leaves the repository: {target}")
+            continue
         if not resolved.exists():
             errors.append(f"{name}: link does not resolve: {target}")
+        elif parts.fragment:
+            if not resolved.is_file():
+                errors.append(f"{name}: fragment target is not a file: {target}")
+                continue
+            body = resolved.read_text(encoding="utf-8-sig")
+            body = re.sub(r"```.*?```", "", body, flags=re.S)
+            explicit = re.findall(r'<a id="([^"]+)"', body)
+            slugs = []
+            counts = {}
+            for heading in re.findall(r"^#+ (.+)$", body, re.M):
+                slug = re.sub(r"[^\w\- ]", "", heading.lower()).replace(" ", "-")
+                count = counts.get(slug, 0)
+                counts[slug] = count + 1
+                slugs.append(f"{slug}-{count}" if count else slug)
+            if unquote(parts.fragment) not in explicit + slugs:
+                errors.append(f"{name}: link fragment does not resolve: {target}")
 
 
 def check_handoff(root, cfg, text, errors, warnings):
@@ -135,6 +163,8 @@ def check_handoff(root, cfg, text, errors, warnings):
 
 def check_journal(root, cfg, text, handoff, errors):
     name = cfg["journal"]
+    if "<!-- SESSION ENTRIES -->" not in text:
+        errors.append(f"{name}: missing session insertion marker")
     anchors = re.findall(rf'<a id="({re.escape(cfg["anchor_prefix"])}[^"]+)"', text)
     if not anchors:
         errors.append(
@@ -146,10 +176,25 @@ def check_journal(root, cfg, text, handoff, errors):
     if duplicates:
         errors.append(f"{name}: anchors must be unique; repeated {sorted(duplicates)}")
     newest = anchors[0]
-    if handoff is not None and f"#{newest}" not in handoff:
+    links = re.findall(r"\]\(([^)]+)\)", handoff or "")
+    journal_path = (root / name).resolve()
+    linked = any(
+        not urlsplit(link).scheme
+        and (root / cfg["handoff"]).parent.joinpath(unquote(urlsplit(link).path)).resolve() == journal_path
+        and unquote(urlsplit(link).fragment) == newest
+        for link in links
+    )
+    if handoff is not None and not linked:
         errors.append(
             f"{cfg['handoff']} must link the newest journal entry (#{newest})"
         )
+    start = text.index(f'<a id="{newest}"')
+    if "<!-- SESSION ENTRIES -->" in text and text.index("<!-- SESSION ENTRIES -->") > start:
+        errors.append(f"{name}: insertion marker must precede newest session")
+    end = text.index(f'<a id="{anchors[1]}"', start + 1) if len(anchors) > 1 else len(text)
+    sections = re.findall(r"^### (.+?)\s*$", text[start:end], re.M)
+    if cfg["journal_sections"] and sections != cfg["journal_sections"]:
+        errors.append(f"{name}: newest entry sections must match the session template in order")
 
 
 def check_entry_points(root, cfg, errors, warnings):
@@ -197,6 +242,9 @@ def check_base(root, cfg, base, errors):
             f"neither {' nor '.join(sorted(records))}.\n"
             f"      first few: {substantive[:5]}"
         )
+    elif substantive and cfg["require_all_records"]:
+        for missing in sorted(records - set(changed)):
+            errors.append(f"changes against {base} also require a record update: {missing}")
 
 
 def main():

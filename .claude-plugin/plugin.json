@@ -1,0 +1,9 @@
+{
+  "name": "handoff-kit",
+  "version": "1.0.0",
+  "description": "Pickup and session-end contract for AI-assisted projects: one AGENTS.md every tool points at, plus a validator that keeps the handoff current, short, and linked.",
+  "author": { "name": "Jon Burgermeister" },
+  "homepage": "https://github.com/jdburgie/handoff-kit",
+  "repository": "https://github.com/jdburgie/handoff-kit",
+  "license": "MIT"
+}

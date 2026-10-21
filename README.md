@@ -30,9 +30,22 @@ CLAUDE.md / .cursorrules …   pointers to AGENTS.md, one per tool you use
 
 ## Install
 
+**As an agent skill.** [`skills/handoff-kit/`](skills/handoff-kit/SKILL.md) is a
+self-contained [Agent Skill](https://agentskills.io): a `SKILL.md` plus the
+installer, templates and validator it uses. Once it is installed, ask your agent
+to "install the handoff kit in this repo", "pick up", "end the session", or
+"upgrade the handoff validator".
+
+- **Claude Code:** `/plugin marketplace add jdburgie/handoff-kit`, then
+  `/plugin install handoff-kit@handoff-kit`.
+- **Any other agent that reads skills:** copy the `skills/handoff-kit/` folder into
+  that agent's skills directory.
+
+**As a script.**
+
 ```bash
-git clone https://github.com/<you>/handoff-kit
-python handoff-kit/install.py ../my-project --tools claude,cursor --ci
+git clone https://github.com/jdburgie/handoff-kit
+python handoff-kit/skills/handoff-kit/install.py ../my-project --tools claude,cursor --ci
 cd ../my-project && python tools/check-handoff.py
 ```
 
@@ -54,6 +67,17 @@ and do not rewrite history to satisfy a validator.
 one: a "current state" block at the top of a journal, a `HANDOFF_*.md`, a pinned
 issue. Move its content into `state-of-play.md` and mark the original superseded.
 Installing beside it leaves two pickup documents, which is worse than none.
+
+**Upgrading a project's copy.** Each project carries its own
+`tools/check-handoff.py` so that CI can run it. To bring that copy up to date:
+
+```bash
+python handoff-kit/skills/handoff-kit/install.py ../my-project --upgrade --dry-run
+```
+
+This replaces only the validator, plus the CI workflow if the project has one. It
+reports whether `AGENTS.md` and the session template differ from the kit, but leaves
+them alone, because local adaptations there are expected.
 
 ## The three ideas
 
@@ -83,8 +107,13 @@ python tools/check-handoff.py --base origin/main     # in CI
   `Updated:` / `Evidence baseline:` / `Session status:` lines, an ISO date that is
   not in the future, and an explicit `Completion condition:`
 - it is under the word limit, and it warns when it has gone stale
-- journal anchors are unique, and the handoff links the newest one
-- every relative markdown link resolves
+- the journal has its `<!-- SESSION ENTRIES -->` marker above the newest entry,
+  anchors are unique, and the handoff links the newest one
+- every relative markdown link resolves, stays inside the repository, and any
+  `#fragment` matches a heading or an explicit anchor (code blocks are ignored)
+- optionally, the newest journal entry has exactly the `journal_sections` you list,
+  and with `require_all_records` a change must update *every* record path rather
+  than any one of them
 - tool entry files point at `AGENTS.md` and stay short instead of restating it
 - with `--base`: a branch that changed the project also updated the record
 
@@ -108,6 +137,20 @@ Common local additions:
   physical state; services want the deployed version and environment
 
 The contract is meant to be edited. It is a working agreement, not a standard.
+
+## Repository layout
+
+`skills/handoff-kit/` holds the canonical copy of everything that gets installed.
+The kit also follows its own contract, so the root `AGENTS.md`,
+`handoff.config.json`, `tools/check-handoff.py`, `docs/session-template.md` and
+`.github/workflows/handoff.yml` are an installed copy.
+`python tests/test_kit.py` fails if those copies drift from the skill.
+
+To package the skill as a standalone zip, for example for a skills marketplace:
+
+```bash
+python -c "import shutil; shutil.make_archive('handoff-kit', 'zip', 'skills', 'handoff-kit')"
+```
 
 ## Provenance
 
