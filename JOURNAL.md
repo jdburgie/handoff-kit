@@ -11,6 +11,46 @@ never an edit that erases it.
 
 <!-- SESSION ENTRIES -->
 
+<a id="session-2026-10-21-release-v1"></a>
+## 2026-10-21 Released v1.0.0
+
+### Objective and constraints
+Merge the skill package, tag it, and produce the zip for the Agensi listing.
+The user uploads and lists it themselves.
+
+### Changes and decisions
+[PR #2](https://github.com/jdburgie/handoff-kit/pull/2) was rebase-merged to `main` as
+`2e400e6`, keeping history linear. It was tagged `v1.0.0` and the tag pushed. The
+upload zip is built from the tag, not the working tree:
+`git -c core.autocrlf=false archive --format=zip --prefix=handoff-kit/ -o dist/handoff-kit-1.0.0.zip v1.0.0:skills/handoff-kit`.
+`dist/` is git-ignored. Added the listing logo as `assets/handoff-kit-logo.svg`
+(source) and `.png` (512×512).
+
+### Validation and evidence
+Before the merge, the `check`, `kit` and GitGuardian checks passed on PR #2 at
+`3b7b233`. The merged tree is identical to the tested tree (`git diff` empty), and
+`tests/test_kit.py` passes on `main`. The zip holds 14 files with LF endings and
+valid frontmatter. Extracted to a fresh directory, it installed into an empty
+project, which passed the validator. **Not verified:** Agensi's scan and review,
+and a Claude Code plugin install.
+
+### State at the end
+`main` and `v1.0.0` are pushed. This record update and the logo are on `main` after
+the tag, so they are not part of v1.0.0. Adopter repositories are untouched.
+
+### Next action and completion condition
+Install the plugin in Claude Code and run a pickup here, then record the Agensi
+listing outcome.
+
+Completion condition: the skill triggers from an install, and the listing result is
+recorded.
+
+### Do not repeat
+Build release zips from the tag with `core.autocrlf=false`, not with
+`shutil.make_archive` on a Windows checkout, which can ship CRLF files.
+
+---
+
 <a id="session-2026-10-21-skill-package"></a>
 ## 2026-10-21 Packaged as an agent skill
 

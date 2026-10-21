@@ -1,9 +1,9 @@
 # handoff-kit — pickup
 
 Updated: 2026-10-21
-Evidence baseline: `173312b`, fetched from `origin/main`, plus uncommitted work on `feat/skill-package`
-Session status: Packaged as an agent skill on `feat/skill-package`; not yet
-committed, pushed, or run in CI. Rows dated 2026-09-08 are last recorded then.
+Evidence baseline: `2e400e6` (tag `v1.0.0`), fetched from `origin/main`
+Session status: v1.0.0 released as an agent skill. The marketplace upload is the
+user's step and has not been observed. Rows dated 2026-09-08 are last recorded then.
 
 ## Current objective
 
@@ -16,8 +16,8 @@ without dependencies. The kit follows its own contract — this file and
 
 | Thing | Last state | Observation and limitation |
 |---|---|---|
-| `skills/handoff-kit/` | `BUILT` 2026-10-21, Windows/Python 3.13 | `tests/test_kit.py` passes all 10 tests from a standalone copy, and both plugin manifests validate. Not yet run in CI, installed as a plugin, or loaded by another agent. |
-| `tools/check-handoff.py` (merged) | `BUILT` 2026-10-21 | Exits 0 here. Five local adopters pass unchanged. The three oaklink repos need a config for their sections and four journal-link fixes. |
+| `skills/handoff-kit/` v1.0.0 | `VERIFIED` 2026-10-21 locally and in CI on [PR #2](https://github.com/jdburgie/handoff-kit/pull/2) | The `kit` and `check` jobs pass. The zip built from the tag installs into an empty project, which then passes the validator. Not yet installed as a plugin, loaded by another agent, or scanned by a marketplace. |
+| `tools/check-handoff.py` (merged) | `VERIFIED` 2026-10-21 in CI | Five local adopters pass unchanged. The three oaklink repos need a config for their sections and four journal-link fixes. |
 | Second adoption: `esp32-sprinkler-controller` | `VERIFIED` 2026-09-08, commit `3d47c84` | Installed and passed the validator with **no edit to the script or the config**. The manual work was migrating an existing ad-hoc handoff and anchoring the existing journal. |
 | `.github/workflows/handoff.yml` | `VERIFIED` on push ([34307145554](https://github.com/jdburgie/handoff-kit/actions/runs/34307145554)) **and on pull request, both directions** | The `--base` step failed a code-only commit ([34307890712](https://github.com/jdburgie/handoff-kit/actions/runs/34307890712)) and passed once the record was updated ([34308026068](https://github.com/jdburgie/handoff-kit/actions/runs/34308026068)). ⚠️ One repo, one-file change, same-repo PR — forked PRs untested. |
 
@@ -30,9 +30,10 @@ and this file is the whole point.
 
 ## Completed work
 
-- Packaged the kit as a self-contained agent skill with install, pickup, session
-  end and upgrade modes. Added a Claude Code plugin manifest and a kit test
-  suite, and merged the esp32-sprinkler-controller validator improvements.
+- Released `v1.0.0`: the kit packaged as a self-contained agent skill with
+  install, pickup, session end and upgrade modes. Added a Claude Code plugin
+  manifest, a kit test suite and a logo (`assets/`), and merged the
+  esp32-sprinkler-controller validator improvements.
 - Added proportional completion checks inspired by unlazy: observable outcomes,
   meaningful checks, applicable evidence, and final request reconciliation.
 
@@ -55,12 +56,13 @@ and this file is the whole point.
 
 ## Next action
 
-With the user's approval, commit `feat/skill-package`, push it, open a PR, and
-confirm that the `handoff` and `test` workflows pass. After merge, tag `v1.0.0`.
-Listing on a marketplace is the user's own step.
+Install the plugin in Claude Code with `/plugin marketplace add
+jdburgie/handoff-kit`, then ask it to pick up this repository. Separately, the user
+is listing the v1.0.0 zip on Agensi; record the scan and review result once known.
 
-Completion condition: both workflows are green on the PR, and the plugin
-installs from `jdburgie/handoff-kit`.
+Completion condition: the installed skill triggers and runs a pickup here, and the
+marketplace listing's outcome is recorded. Uncertain until then: whether the
+skill's description triggers reliably.
 
 ## Open questions and parked work
 
@@ -78,6 +80,7 @@ installs from `jdburgie/handoff-kit`.
 
 ## Evidence and session record
 
+- [v1.0.0 released](../JOURNAL.md#session-2026-10-21-release-v1).
 - [Packaged as an agent skill](../JOURNAL.md#session-2026-10-21-skill-package).
 
 - [Completion guidance](../JOURNAL.md#session-2026-10-05-completion-guidance).
